@@ -70,7 +70,7 @@ class AdminController extends Controller {
                 ->where('id', $id)
                 ->delete();
         if ($deleteuser) {
-            return redirect('admin_home');
+            return redirect('users');
         }
     }
 
@@ -90,7 +90,25 @@ class AdminController extends Controller {
         $getuser = DB::table('users')
                 ->where('id', $id)
                 ->first();
-        dd($getuser);
+
+        $this->data['userdata'] = $getuser;
+        return view('admin.userprofile')->with($this->data);
+    }
+
+    public function createnewuser(Request $request) {
+        $insertnewuser = DB::table('users')->insert(
+                array(
+                    'name' => $request->username,
+                    'email' => $request->useremail,
+                    'password' => bcrypt($request->userpassword),
+                    'date' => $request->birthday,
+                    'online' => 0
+                )
+        );
+
+        if ($insertnewuser) {
+            return redirect('users');
+        }
     }
 
 }
